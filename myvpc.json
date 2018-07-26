@@ -3,26 +3,13 @@
 
  "Description": "Deploy a simple Amazon Linux Instance and allow SSH connectivity.",
 
-"Parameters": {
-  
-
-"PublicAvailabilityZone": {
-    "Description": "select AZ",
-    "Type": "AWS::EC2::AvailabilityZone::Name",
-    "Default": "-"
-}
-  
-
-
-},
-
 
 "Resources": {
  
  "myvpc": {
   "Type": "AWS::EC2::VPC",
   "Properties": {
-    "CidrBlock": "10.10.0.0/16"
+    "CidrBlock": "10.31.0.0/16"
     }
 },
 
@@ -30,7 +17,7 @@
 "myigw": {
   "Type": "AWS::EC2::InternetGateway",
   "Properties": {
-    "Tags": ["myigw"]
+    
   }
 },
 "AttachGateway": {
