@@ -3,10 +3,10 @@
 
  "Description": "Deploy a simple Amazon Linux Instance and allow SSH connectivity.",
 
-"ParamNames": {
+"Parameters": {
   
 
-"paramName": {
+"PublicAvailabilityZone": {
     "Description": "select AZ",
     "Type": "AWS::EC2::AvailabilityZone::Name",
     "Default": "-"
@@ -40,58 +40,15 @@
     { "Ref": "myvpc" }
     ,
     "InternetGatewayId": { "Ref": "myigw" }
-  },
-
-
-"publicsubnet": {
-  "Type": "AWS::EC2::Subnet",
-  "Properties": {
-    "AvailabilityZone": "-",
-    "VpcId": 
-    { "Ref": "myvpc" },
-    
-    "CidrBlock": "10.10.1.0/24",
-    "Tags": ["-"]
   }
-},
 
 
-"publicrouteTable": {
-  "Type": "AWS::EC2::RouteTable",
-  "Properties": {
-    "VpcId": 
-    { "Ref": "myvpc" }
-    ,
-    "Tags": ["publicrouteTable"]
-  },
 
-
-"myrout": {
-  "Type": "AWS::EC2::Route",
-  "Properties": {
-    "RouteTableId": 
-    { "Ref": "publicrouteTable" }
-    ,
-    "DestinationCidrBlock": "0.0.0.0/0",
-    "GatewayId": 
-    { "Ref": "myiqw" }
-    
-  }
-}
-
-
-  
-}
 
 
 }
 
-
-    
-
-
 }
-
 
     
 
