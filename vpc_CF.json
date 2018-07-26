@@ -1,0 +1,94 @@
+{
+
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "Deploy a simple Amazon Linux Instance and allow SSH connectivity.",
+   
+   
+   "Parameters": {
+       
+    
+    "publicaz": {
+      "Description": "az",
+      "Type": "AWS::EC2::AvailabilityZone::Name"
+      },
+    "privateaz": {
+            "Description": "az",
+            "Type": "AWS::EC2::AvailabilityZone::Name"
+         }  
+    
+   },
+
+   
+   "Resources": {
+       
+       "myvpc": {
+         "Type": "AWS::EC2::VPC",
+         "Properties": {
+           "CidrBlock": "10.30.0.0/16"
+           
+           }
+         },
+
+         "igwName": {
+          "Type": "AWS::EC2::InternetGateway"
+            },
+        "AttachGateway": {
+          "Type": "AWS::EC2::VPCGatewayAttachment",
+          "Properties": {
+            "VpcId": 
+            { "Ref": "myvpc" }
+            ,
+            "InternetGatewayId": { "Ref": "igwName" }
+          }
+        },
+        "publicsubnet1": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+            "AvailabilityZone": 
+            { "Ref": "publicaz" }
+            ,
+            "VpcId": 
+            { "Ref": "myvpc" }
+            ,
+            "CidrBlock": "10.30.1.0/24"           
+          }
+        },
+
+        
+        "privatesubnet1": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+            "AvailabilityZone": 
+            { "Ref": "privateaz" }
+            ,
+            "VpcId": 
+            { "Ref": "myvpc" }
+            ,
+            "CidrBlock": "10.30.2.0/24"
+            
+          }
+        }
+
+       
+       
+       
+        
+
+        
+        
+         
+       
+   },
+
+   
+   "Outputs" : {
+     
+  
+    
+   }
+   
+   
+   
+
+}
