@@ -1,0 +1,114 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+
+"Description": "Deploy a simple Amazon Linux Instance and allow SSH connectivity.",
+
+
+"Parameters": {
+   
+   "publicAZ": {
+       "Description": "publicAZ",
+       "Type": "AWS::EC2::AvailabilityZone::Name"
+           
+   }
+     
+},
+
+
+
+
+
+"Resources": {
+
+
+    
+    "myvpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.10.0.0/16"
+            }
+    },
+
+
+    
+    "myiqw": {
+      "Type": "AWS::EC2::InternetGateway"
+      },
+    "AttachGateway": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": 
+        { "Ref": "myvpc" }
+        ,
+        "InternetGatewayId": { "Ref": "myiqw" }
+      }
+    },
+
+
+    
+    "publicsubnetName": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "AvailabilityZone": 
+        { "Ref": "publicAZ" }
+        ,
+        "VpcId": 
+        { "Ref": "myvpc" }
+        ,
+        "CidrBlock": "10.10.1.0/24"
+      }
+    },
+
+
+    
+    "publicRT": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": 
+        { "Ref": "myvpc" }
+        
+      }
+    },
+
+    
+    "publicroute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": 
+        { "Ref": "publicRT" }
+        ,
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": 
+        { "Ref": "myiqw" }
+        
+      }
+    },
+
+    
+    "publicrouteTableAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": 
+        { "Ref": "publicsubnetName" }
+        ,
+        "RouteTableId": 
+        { "Ref": "publicRT" }
+        
+      }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+}
+
+
+
+
+
+
+}
