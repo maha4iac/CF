@@ -1,0 +1,189 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+
+     "Description": "skr vpc",
+     "Parameters":{
+      
+
+      
+      "publicAZ": {
+          "Description": "select public AZ",
+          "Type": "AWS::EC2::AvailabilityZone::Name",
+          "Default": "ap-southeast-1a"
+      },
+
+      
+      "privateAZ": {
+          "Description": "select private AZ",
+          "Type": "AWS::EC2::AvailabilityZone::Name"
+        }
+      
+      
+      
+      
+      
+
+     },
+    
+    "Resources": {
+
+    
+    "skrvpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.31.0.0/16"
+        }
+    },
+
+    
+    "skrigw": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+       }
+    },
+    "AttachGateway": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": 
+        { "Ref": "skrvpc" }
+        ,
+        "InternetGatewayId": { "Ref": "skrigw" }
+      }
+    },
+
+    
+    "publicsubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "AvailabilityZone": 
+        { "Ref": "publicAZ" }
+        ,
+        "VpcId": 
+        { "Ref": "skrvpc" }
+        ,
+        "CidrBlock": "10.31.1.0/24"
+       
+      }
+    },
+
+    "privatesubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "AvailabilityZone": 
+        { "Ref": "privateAZ" }
+        ,
+        "VpcId": 
+        { "Ref": "skrvpc" }
+        ,
+        "CidrBlock": "10.31.2.0/24"
+       
+      }
+    },
+
+    
+    "publicRT": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": 
+        { "Ref": "skrvpc" }
+         
+      }
+    },
+
+
+    
+    "publicroute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": 
+        { "Ref": "publicRT" }
+        ,
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": 
+        { "Ref": "skrigw" }
+        
+      }
+    },
+
+    
+    "publicrouteTableAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": 
+        { "Ref": "publicsubnet" }
+        ,
+        "RouteTableId": 
+        { "Ref": "publicRT" }
+        
+      }
+    },
+
+
+    
+    "pivateRT": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": 
+        { "Ref": "skrvpc" }
+               
+      }
+    },
+
+    
+    "privaterouteTableAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": 
+        { "Ref": "privatesubnet" }
+        ,
+        "RouteTableId": 
+        { "Ref": "pivateRT" }
+        
+      }
+    },
+
+
+    "EIP" : {
+      "Type" : "AWS::EC2::EIP"
+      },
+    
+    "NAT" : {
+      "Type" : "AWS::EC2::NatGateway",
+      "Properties" : {
+        "AllocationId" : { "Fn::GetAtt" : ["EIP", "AllocationId"]},
+        "SubnetId" : { "Ref" : "publicsubnet"}
+       
+      }
+    },
+
+
+    
+    "privateroute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": 
+        { "Ref": "pivateRT" }
+        ,
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId" : { "Ref" : "NAT" }
+      }
+    }
+    
+        
+    },
+ "Outputs":
+ {
+   
+   "name" : {
+     "Value" : 
+     { "Ref": "skrvpc" }
+     
+   }
+   
+
+
+ }
+
+
+
+}
